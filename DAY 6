@@ -1,0 +1,54 @@
+import pandas as pd
+import re
+
+with open('/Users/ches_blue923/ASS1/.venv/lib/DAY 6.txt', 'r') as file_object:
+    directions = file_object.read()
+file_object.close()
+
+df = pd.DataFrame(0, index=range(1000), columns=range(1000))
+
+pattern = re.compile(r'(turn on|turn off|toggle) (\d+),(\d+) through (\d+),(\d+)')
+
+for instruction_line in directions.split('\n'):
+    match = re.match(pattern, instruction_line)
+    if match:
+        command = match.group(1)
+        x1, y1, x2, y2 = map(int, match.group(2, 3, 4, 5))
+        if command == 'turn on':
+            df.loc[x1:x2+1, y1:y2+1] = 1
+        elif command == 'turn off':
+            df.loc[x1:x2+1, y1:y2+1] = 0
+        elif command == 'toggle':
+            df.loc[x1:x2+1, y1:y2+1] = 1 - df.loc[x1:x2+1, y1:y2+1]
+total_lit_lights = df.values.sum()
+print(total_lit_lights)
+
+#aided by a classmate with computer background & gemini, prompt:how to do advent of code 2015 day 6 part 1 via python panda?
+import pandas as pd
+import re
+
+df = pd.DataFrame(0, index=range(1000), columns=range(1000))
+
+pattern = re.compile(r'(turn on|turn off|toggle) (\d+),(\d+) through (\d+),(\d+)')
+
+for instruction_line in directions.split('\n'):
+    match = re.match(pattern, instruction_line)
+    if match:
+        command = match.group(1)
+        x1, y1, x2, y2 = map(int, match.group(2, 3, 4, 5))
+
+        if command == 'turn on':
+            df.iloc[x1:x2 + 1, y1:y2 + 1] += 1
+
+        elif command == 'turn off':
+            df.iloc[x1:x2 + 1, y1:y2 + 1] -= 1
+            # Brightness cannot drop below 0, so we clip the values in this slice
+            df.iloc[x1:x2 + 1, y1:y2 + 1] = df.iloc[x1:x2 + 1, y1:y2 + 1].clip(lower=0)
+
+        elif command == 'toggle':
+            df.iloc[x1:x2 + 1, y1:y2 + 1] += 2
+
+total_brightness = df.values.sum()
+print(total_brightness)
+
+#aided by gemini, prompt:here is my code for advent of code 2015 day 6 part 1, please continue part 2 in consistent with the above python style
